@@ -43,7 +43,7 @@ userRoute.route("/login")
   try {
     const user = await getUserByEmail(email,"populated");
     if (!user) {
-      res.status(500).json({
+      res.status(400).json({
         success: false,
         message: "user does not exists",
       });
@@ -58,7 +58,7 @@ userRoute.route("/login")
         user
       });
     }else{
-      res.status(404).json({success:false,message:"user or password incorrect"})
+      res.status(400).json({success:false,message:"user or password incorrect"})
     }
   } catch (err) {
     res.json({
