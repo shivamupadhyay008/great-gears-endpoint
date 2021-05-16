@@ -58,10 +58,10 @@ userRoute.route("/login")
         user
       });
     }else{
-      res.json({success:false,message:"user or password incorrect"})
+      res.status(404).json({success:false,message:"user or password incorrect"})
     }
   } catch (err) {
-    res.json({
+    res.status(404).json({
       success: false,
       message: "user not found",
     });
