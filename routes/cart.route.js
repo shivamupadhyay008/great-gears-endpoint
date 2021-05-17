@@ -23,10 +23,6 @@ cartRoute
     try {
       const user = req.user;
       const { cart } = user;
-       cart.map((item) => {
-        let items = item.productId;
-        return { ...items._doc, qnt: item.qnt };
-      });
       let newCart=cart.map((item) => {
         let items = item.productId;
         return { ...items._doc, qnt: item.qnt };

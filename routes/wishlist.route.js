@@ -5,7 +5,7 @@ const {
 } = require("../middlewares/user.find")
 wishlistRoute.param("userId", async (req, res, next, userId) => {
   try {
-    const user = await getUserById(userId);
+    const user = await getUserById(userId,"wishlist");
     req.user = user;
     next();
   } catch (err) {
@@ -20,9 +20,16 @@ wishlistRoute.route("/:userId")
     try {
       const user = req.user;
       const { wishlist } = await user;
+
+
+      let newWishlist=wishlist.map((item) => {
+        let items = item.productId;
+        return { ...items._doc, qnt: item.qnt };
+      })
+
       res.json({
         success: true,
-        wishlist
+        wishlist:newWishlist
       });
     } catch (err) {
       res.json({
@@ -44,7 +51,7 @@ wishlistRoute.route("/:userId")
         const newWishlist= { productId: productId };
         user.wishlist.push(newWishlist);
         await user.save();
-        res.json({ success: true, user });
+        res.json({ success: true, message:"added successfully" });
       }
       res.json({success:true,message:"added to wishlist"})
     } catch (err) {
