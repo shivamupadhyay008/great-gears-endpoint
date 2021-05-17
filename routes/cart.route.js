@@ -33,7 +33,7 @@ cartRoute
       })
       res.json({
         success: true,
-        newCart,
+        cart:newCart,
       });
     } catch (err) {
       res.json({
