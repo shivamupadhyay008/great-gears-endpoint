@@ -41,7 +41,7 @@ userRoute.route("/login")
     headers: { email, password },
   } = req;
   try {
-    const user = await getUserByEmail(email,"populated");
+    const user = await getUserByEmail(email);
     if (!user) {
       res.json({
         success: false,

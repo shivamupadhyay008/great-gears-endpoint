@@ -2,13 +2,12 @@ const express = require("express");
 const cartRoute = express.Router();
 const { UserModel } = require("../model/user.model");
 const { extend } = require("lodash");
-const { getUserById }  = require("../middlewares/user.find")
-
+const { getUserById } = require("../middlewares/user.find");
 
 cartRoute.param("userId", async (req, res, next, userId) => {
   try {
     console.log("before", userId);
-    const user = await await getUserById(userId,"cart");
+    const user = await getUserById(userId, "cart");
     req.user = user;
     next();
   } catch (err) {
@@ -24,9 +23,17 @@ cartRoute
     try {
       const user = req.user;
       const { cart } = user;
+       cart.map((item) => {
+        let items = item.productId;
+        return { ...items._doc, qnt: item.qnt };
+      });
+      let newCart=cart.map((item) => {
+        let items = item.productId;
+        return { ...items._doc, qnt: item.qnt };
+      })
       res.json({
         success: true,
-        cart,
+        newCart,
       });
     } catch (err) {
       res.json({
@@ -41,25 +48,23 @@ cartRoute
 
     try {
       const user = await getUserById(userId);
-      let {cart}=user;
+      let { cart } = user;
 
-      let present = cart.find(
-        (item) => item.productId ==productId);
+      let present = cart.find((item) => item.productId == productId);
       if (present) {
         let updateQnt = { productId, qnt };
         present = extend(present, updateQnt);
-        cart=cart.map((item)=>{
-        return item.productId==productId?present:item;
-        })
-        user.cart =cart;
-        let respo=await user.save();
-        return res.json({respo });
-      }
-      else{
-      const newCartItem = { productId: productId, qnt: qnt??1 };
-      user.cart.push(newCartItem);
-      await user.save();
-      res.json({ success: true, user });
+        cart = cart.map((item) => {
+          return item.productId == productId ? present : item;
+        });
+        user.cart = cart;
+        let respo = await user.save();
+        return res.json({ respo });
+      } else {
+        const newCartItem = { productId: productId, qnt: qnt ?? 1 };
+        user.cart.push(newCartItem);
+        await user.save();
+        res.json({ success: true, user });
       }
     } catch (err) {
       console.log(err);
