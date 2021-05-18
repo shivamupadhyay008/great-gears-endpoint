@@ -68,7 +68,6 @@ wishlistRoute
           return item.productId != productId;
         });
         user.wishlist=list;
-        res.json({ list });
         await user.save();
         res.json({ success: true, message: "deleted successfully" });
       }

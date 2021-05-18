@@ -84,6 +84,7 @@ cartRoute
         });
         user.cart = cart;
         let respo = await user.save();
+        console.log(respo)
         return res.json({ respo });
       } else {
         res.json({ success: true, user });
