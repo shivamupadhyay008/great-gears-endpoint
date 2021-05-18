@@ -66,6 +66,32 @@ cartRoute
       console.log(err);
       res.json({ success: false, message: err });
     }
-  });
+  })
+  .delete(async (req, res) => {
+    const { userId } = req.params;
+    const { productId, qnt } = req.body;
+
+    try {
+      const user = await getUserById(userId);
+      let { cart } = user;
+
+      let present = cart.find((item) => item.productId == productId);
+      if (present) {
+        let updateQnt = { productId, qnt };
+        present = extend(present, updateQnt);
+        cart = cart.filter((item) => {
+          return item.productId != productId;
+        });
+        user.cart = cart;
+        let respo = await user.save();
+        return res.json({ respo });
+      } else {
+        res.json({ success: true, user });
+      }
+    } catch (err) {
+      console.log(err);
+      res.json({ success: false, message: err });
+    }
+  })
 
 module.exports = cartRoute;

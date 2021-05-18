@@ -26,7 +26,7 @@ wishlistRoute
       const wishlist = req.wishlist;
       res.json({
         success: true,
-        wishlist
+        wishlist,
       });
     } catch (err) {
       res.json({
@@ -51,6 +51,27 @@ wishlistRoute
         res.json({ success: true, message: "added successfully" });
       }
       res.json({ success: true, message: "already in wishlist" });
+    } catch (err) {
+      console.log(err);
+      res.json({ success: false, message: err });
+    }
+  })
+  .delete(async (req, res) => {
+    const { userId } = req.params;
+    const { productId } = req.body;
+    try {
+      const user = await getUserById(userId);
+      let wishlist = user.wishlist;
+      let present = wishlist.find((item) => item.productId == productId);
+      if (present) {
+        const list = wishlist.filter((item) => {
+          return item.productId != productId;
+        });
+        user.wishlist=list;
+        res.json({ list });
+        await user.save();
+        res.json({ success: true, message: "deleted successfully" });
+      }
     } catch (err) {
       console.log(err);
       res.json({ success: false, message: err });
