@@ -11,13 +11,14 @@ wishlistRoute.param("userId", async (req, res, next, userId) => {
       return { ...items._doc };
     });
     req.wishlist = newWishlist;
-    next();
+
   } catch (err) {
     res.json({
       success: false,
       message: "user does not exists",
     });
   }
+  next();
 });
 wishlistRoute
   .route("/:userId")
@@ -35,7 +36,6 @@ wishlistRoute
       });
     }
   })
-
   .post(async (req, res) => {
     const { productId } = req.body;
     console.log(productId);
@@ -57,8 +57,11 @@ wishlistRoute
     }
   })
   .delete(async (req, res) => {
-    const { userId } = req.params;
-    const { productId } = req.body;
+    req.user=undefined;
+    req.wishlist=undefined;
+    const { userId} = req.params;
+    const {productId}=req.body;
+    console.log(userId,productId)
     try {
       const user = await getUserById(userId);
       let wishlist = user.wishlist;
@@ -75,5 +78,6 @@ wishlistRoute
       console.log(err);
       res.json({ success: false, message: err });
     }
+    res.status(404).json({success:false,message:"unable to delete"})
   });
 module.exports = wishlistRoute;
